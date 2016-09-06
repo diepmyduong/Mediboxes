@@ -1,0 +1,180 @@
+<div ng-controller="PartnersCtrl">
+  <uib-tabset justified="true">
+    <uib-tab id="users">
+      <uib-tab-heading>
+        <fa name="users"></fa>
+      </uib-tab-heading>
+
+      <h6><strong>Online</strong></h6>
+      <ul >
+        <li class="online" ng-repeat="(key,partner) in partners" ng-if="partnerProfiles[key].isOnline">
+          <div class="media">
+            <a class="pull-left thumb thumb-sm" href="javascript:;">
+              <img class="media-object img-circle size-30x30" ng-src='{{partnerProfiles[key].photoURL}}' ng-if="partnerProfiles[key].photoURL" alt>
+            </a>
+            <div class="media-body">
+              <span class="media-heading"><strong>{{partnerProfiles[key].displayName}}</strong></span>
+              <small><i class="fa fa-info-circle"></i> {{partnerProfiles[key].email}}</small>
+              <span class="badge badge-outline status"></span>
+            </div>
+          </div>
+        </li>
+      </ul>
+
+      <h6><strong>Offline</strong></h6>
+
+      <ul>
+        <li class="offline" ng-repeat="(key,partner) in partners" ng-if="!partnerProfiles[key].isOnline">
+          <div class="media">
+            <a class="pull-left thumb thumb-sm" href="javascript:;">
+              <img class="media-object img-circle size-30x30" ng-src='{{partnerProfiles[key].photoURL}}' ng-if="partnerProfiles[key].photoURL" alt>
+            </a>
+            <div class="media-body">
+              <span class="media-heading"><strong>{{partnerProfiles[key].displayName}}</strong></span>
+              <small><i class="fa fa-info-circle"></i> {{partnerProfiles[key].email}}</small>
+              <span class="badge badge-outline status"></span>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <!-- <h6><strong>Public</strong> Rooms</h6> -->
+
+    <!--   <ul>
+        <li class="online" ng-repeat="room in rooms">
+          <div class="media">
+            <a class="pull-left thumb-sm" href="javascript:;" ng-click="openChatBox(room,false)">
+              <img class="media-object img-circle size-30x30" src='{{room.thumbnailUrlFromStorage}}' ng-if="room.thumbnailUrlFromStorage" alt>
+            </a>
+            <div class="media-body">
+              <span class="media-heading"><strong>{{room.caption}}</strong></span>
+              <span class="badge badge-outline status"></span>
+            </div>
+          </div>
+        </li>
+      </ul> -->
+    </uib-tab>
+
+    <uib-tab>
+      <uib-tab-heading>
+        <fa name="heart"></fa>
+      </uib-tab-heading>
+
+      <h6><strong>Partners</strong> List</h6>
+      <ul>
+        <li ng-class="{online:partnerProfiles[key].isOnline, offline:!partnerProfiles[key].isOnline}" ng-repeat="(key,partner) in partners">
+          <div class="media">
+            <a class="pull-left thumb thumb-sm" href="javascript:;">
+              <img class="media-object img-circle" ng-src='{{partnerProfiles[key].photoURL}}' ng-if="partnerProfiles[key].photoURL" alt>
+            </a>
+            <div class="media-body">
+              <span class="media-heading"><strong>{{partnerProfiles[key].displayName}}</strong></span>
+              <small><i class="fa fa-info-circle"></i> {{partnerProfiles[key].email}}</small>
+              <span class="badge badge-outline status"></span>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </uib-tab>
+    <!-- <uib-tab heading="Long Justified">
+      <uib-tab-heading>
+        <fa name="cog"></fa>
+      </uib-tab-heading>
+
+      <h6><strong>Chat</strong> Settings</h6>
+
+      <ul class="settings">
+
+        <li>
+          <div class="form-group">
+            <label class="col-xs-8 control-label">Show Offline Users</label>
+            <div class="col-xs-4 control-label">
+              <div class="onoffswitch greensea">
+                <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="show-offline" checked="">
+                <label class="onoffswitch-label" for="show-offline">
+                  <span class="onoffswitch-inner"></span>
+                  <span class="onoffswitch-switch"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <div class="form-group">
+            <label class="col-xs-8 control-label">Show Fullname</label>
+            <div class="col-xs-4 control-label">
+              <div class="onoffswitch greensea">
+                <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="show-fullname">
+                <label class="onoffswitch-label" for="show-fullname">
+                  <span class="onoffswitch-inner"></span>
+                  <span class="onoffswitch-switch"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <div class="form-group">
+            <label class="col-xs-8 control-label">History Enable</label>
+            <div class="col-xs-4 control-label">
+              <div class="onoffswitch greensea">
+                <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="show-history" checked="">
+                <label class="onoffswitch-label" for="show-history">
+                  <span class="onoffswitch-inner"></span>
+                  <span class="onoffswitch-switch"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <div class="form-group">
+            <label class="col-xs-8 control-label">Show Locations</label>
+            <div class="col-xs-4 control-label">
+              <div class="onoffswitch greensea">
+                <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="show-location" checked="">
+                <label class="onoffswitch-label" for="show-location">
+                  <span class="onoffswitch-inner"></span>
+                  <span class="onoffswitch-switch"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <div class="form-group">
+            <label class="col-xs-8 control-label">Notifications</label>
+            <div class="col-xs-4 control-label">
+              <div class="onoffswitch greensea">
+                <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="show-notifications">
+                <label class="onoffswitch-label" for="show-notifications">
+                  <span class="onoffswitch-inner"></span>
+                  <span class="onoffswitch-switch"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <div class="form-group">
+            <label class="col-xs-8 control-label">Show Undread Count</label>
+            <div class="col-xs-4 control-label">
+              <div class="onoffswitch greensea">
+                <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="show-unread" checked="">
+                <label class="onoffswitch-label" for="show-unread">
+                  <span class="onoffswitch-inner"></span>
+                  <span class="onoffswitch-switch"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </li>
+
+      </ul>
+    </uib-tab> -->
+  </uib-tabset>
+</div>

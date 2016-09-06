@@ -1,0 +1,38 @@
+<div id="sidebar-wrap" ng-controller="NavCtrl" class="siri-sidebar-wrap">
+  <uib-accordion close-others="oneAtTime" slimscroll="{height: '100%'}">
+    <div ng-init="status.isThumbnailOpen = true" uib-accordion-group is-open="true" ng-class="{'open': status.isThumbnailOpen, 'closed': !status.isThumbnailOpen}" id="seriesList" ng-if="preview.seriesList">
+      <uib-accordion-heading>
+        Series List <i class="pull-right fa" ng-class="{'fa-angle-up': status.isThumbnailOpen, 'fa-angle-down': !status.isThumbnailOpen}"></i>
+      </uib-accordion-heading>
+      <ul id="navigation" nav-collapse ripple>
+        <li ng-repeat="(key, series) in preview.seriesList"
+            ng-init="previewSeries[key].previewLoading = false;
+                      previewSeries[key].totalFrame = 0;
+                      previewSeries[key].currentFrame = 0;
+                      previewSeries[key].visible = false;
+                      previewSeries[key].series = series;"
+            >
+          <a>
+            <div ng-drag="true" ng-drag-data="key" ng-drag-success="onDragComplete($data,$event)" ng-center-anchor="true">
+              <md-grid-list
+              md-cols-sm="1" md-cols-md="1" md-cols-gt-md="1"
+              md-row-height-gt-md="1:1" md-row-height="2:2"
+              md-gutter="12px" md-gutter-gt-sm="8px" class="portlet">
+                <md-grid-tile class="bg-default" md-colspan="1"
+                  ng-click="">
+                  <md-progress-linear md-mode="indeterminate" style="position: absolute" ng-if="previewLoadings[key]"></md-progress-linear>
+                  <sr-dicom-viewer resize="true" series="series" series-list-ref="preview.seriesListRef" style="width:100%;height:100%"></sr-dicom-viewer>
+                  <md-grid-tile-footer>
+                    <h3>{{series.SeriesDescription}}</h3>
+                  </md-grid-tile-footer>
+                </md-grid-tile >
+              </md-grid-list> 
+            </div>
+            
+          </a>
+        </li>
+      </ul>
+    </div>
+
+  </uib-accordion>
+</div>

@@ -1,0 +1,283 @@
+<div class="page page-folder">
+  <!-- page header -->
+  <div class="pageheader">
+
+    <h2>{{page.title}} <span>// {{page.subtitle}}</span></h2>
+
+    <div class="page-bar">
+
+      <ul class="page-breadcrumb">
+        <li>
+          <a ui-sref="app.pages.profile"><i class="fa fa-home"></i> {{main.title}}</a>
+        </li>
+        <li>
+          <a href="javascript:;">DICOM Pages</a>
+        </li>
+        <li>
+          <a ui-sref="app.pages.folder">Patients</a>
+        </li>
+        <li>
+          <a ui-sref="app.pages.patient">{{page.title}}</a>
+        </li>
+
+      </ul>
+
+    </div>
+
+  </div>
+  <!-- /page header -->
+
+
+
+
+
+
+  <!-- page content -->
+  <div class="pagecontent">
+  <md-content >
+    <md-progress-linear md-mode="indeterminate" ng-show="patientLoading"></md-progress-linear>
+    <md-toolbar class="bg-greensea">
+      <div class="md-toolbar-tools">
+        <h2>
+          <strong>{{patient.PatientName}} </strong>
+        </h2>
+        <span flex></span>
+       <a id="full" md-position-mode="target-right target" href tile-control-fullscreen ng-click="isFullscreen02 = !isFullscreen02">
+          <fa name="expand"></fa>
+        </a>
+      </div>
+    </md-toolbar>
+    <md-content style="height: 500px;" class="bg-greensea" fullscreen="isFullscreen03">
+
+      <section class="tile bg-greensea" >
+
+        <!-- tile body -->
+        <div class="tile-body p-0">
+
+          <table class="table table-condensed">
+            <thead>
+              <tr>
+                <th>Study Description</th>
+                <th>Study ID</th>
+                <th>Study Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="(key,study) in patient.StudiesList" ng-click="preview(key,study)">
+                <td>{{study.StudyDescription}}</td>
+                <td>{{study.StudyID}}</td>
+                <td>{{study.StudyDate | date : "dd/MM/yyyy"}}</td>
+                <td>
+                    <a class="btn" ng-click="preview(key,study)">
+                      <md-tooltip md-direction="left">Preview</md-tooltip>
+                      <i class="glyph-icon icon-eye"></i>
+                    </a>
+                    <a class="btn"><i class="glyph-icon icon-share"></i></a>
+                    <a class="btn"><i class="glyph-icon icon-lock"></i></a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+        <!-- /tile body -->
+
+      </section>
+    </md-content>
+    <md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="right">
+      <md-toolbar class="md-theme-light bg-greensea">
+        <div class="md-toolbar-tools">
+          <h1 class="md-toolbar-tools">Preview</h1>
+          <span flex></span>
+          <md-menu md-position-mode="target-right target">
+            <md-button aria-label="More" class="md-icon-button" ng-click="$mdOpenMenu()">
+              <md-icon md-menu-origin md-font-icon="zmdi zmdi-more-vert"></md-icon>
+            </md-button>
+            <md-menu-content width="4">
+              <md-menu-item>
+                <md-button ng-click="openDICOMViewer(previewStudy)">
+                  Open DICOM Viewer
+                </md-button>
+              </md-menu-item>
+            </md-menu-content>
+          </md-menu>
+        </div>
+      </md-toolbar>
+      <md-content ng-controller="StudyPreviewCtrl" layout-padding>
+        <md-grid-list
+          md-cols-sm="4" md-cols-md="4" md-cols-gt-md="4"
+          md-row-height-gt-md="1:1" md-row-height="2:2"
+          md-gutter="12px" md-gutter-gt-sm="8px" ng-if="previewStudy">
+          <md-grid-tile md-colspan="1" md-rowspan="3">
+            <md-content style="width:100%;height:100%;">
+                <md-grid-list
+                md-cols-sm="1" md-cols-md="1" md-cols-gt-md="1"
+                md-row-height-gt-md="1:1" md-row-height="2:2"
+                md-gutter="12px" md-gutter-gt-sm="8px">
+                  <md-grid-tile class="bg-greensea" md-colspan="1"
+                    ng-repeat="(key, seri) in previewStudy.SeriesList"
+                    ng-click="selectPreviewSeri(key)"
+                    ng-init="previewSeries[key].previewLoading = false;
+                              previewSeries[key].totalFrame = 0;
+                              previewSeries[key].currentFrame = 0">
+                    <md-progress-linear md-mode="indeterminate" style="position: absolute" ng-if="previewLoadings[key]"></md-progress-linear>
+                    <sr-dicom-viewer seri="seri" progressing="previewLoadings[key]" style="width:100%;height:100%"></sr-dicom-viewer>
+                  </md-grid-tile >
+                </md-grid-list>
+            </md-content>
+          </md-grid-tile>
+          <md-grid-tile class="bg-blue dicomviewer" md-colspan="3" md-rowspan="3"
+                        ng-repeat="(key, series) in previewStudy.SeriesList" ng-if="key == previewSeriesIndex">
+            <md-progress-linear md-mode="indeterminate" style="position: absolute" ng-if="previewSeries[key].previewLoading"></md-progress-linear>
+            <div layout id="stack-slider">
+              <!-- <md-progress-linear ng-init="totalFrame = 1;currentFrame = 0" flex class="md-warn" md-mode="buffer" value="{{currentFrame / totalFrame * 100}}" md-buffer-value="{{100}}"> -->
+              <!-- <div flex="20" layout layout-align="center center">
+                  <input type="text" value="{{currentFrame + 1}} / {{totalFrame}}" aria-label="red" aria-controls="red-slider" class="text-center" readonly="readonly">
+              </div> -->
+              <!-- <md-slider ng-init="totalFrame = 0" flex="100" min="0" max="{{totalFrame - 1}}" ng-model="currentFrame" aria-label="red" id="red-slider" class>
+              </md-slider> -->
+            </div>
+            <sr-dicom-viewer resize="true" total-frame="previewSeries[key].totalFrame" current-frame="previewSeries[key].currentFrame" seri="series" style="width:100%;height:100%" progressing="previewSeries[key].previewLoading" tools-enable="true" stack-scroll="true" scroll-indicator="true">
+            </sr-dicom-viewer>
+            
+          </md-grid-tile>
+        </md-grid-list>
+        <md-tabs md-dynamic-height md-border-bottom class="siri-tabs">
+          <md-tab label="Patient">
+            <md-content class="md-padding">
+              <md-list>
+                <div ng-if="patient.PatientName != ''">
+                  <strong>Patient Name</strong></br>
+                  {{patient.PatientName}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="patient.PatientID != ''">
+                  <strong>Patient ID</strong></br>
+                  {{patient.PatientID}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="patient.PatientBirthDay != ''">
+                  <strong>Patient BirthDay</strong></br>
+                  {{patient.PatientBirthDay | date : 'dd/MM/yyyy'}}
+                  <md-divider></md-divider>
+                </div>
+              </md-list>
+            </md-content>
+          </md-tab>
+          <md-tab label="Study" class="text-red">
+            <md-content class="md-padding">
+              <md-list>
+                <div ng-if="previewStudy.StudyDescription != ''">
+                  <strong>Study Description</strong></br>
+                  {{previewStudy.StudyDescription}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="previewStudy.StudyDate != ''">
+                  <strong>Study Date</strong></br>
+                  {{previewStudy.StudyDate | date : 'dd/MM/yyyy'}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="previewStudy.StudyID != ''">
+                  <strong>Study ID</strong></br>
+                  {{previewStudy.StudyID}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="previewStudy.StudyDescription != ''">
+                  <strong>Study Description</strong></br>
+                  {{previewStudy.StudyDescription}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="previewStudy.InstitutionName != ''">
+                  <strong>Institution Name</strong></br>
+                  {{previewStudy.InstitutionName}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="previewStudy.AccessionNumber != ''">
+                  <strong>Accession Number</strong></br>
+                  {{previewStudy.AccessionNumber}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="previewStudy.ReferringPhysicianName != ''">
+                  <strong>Referring Physician Name</strong></br>
+                  {{previewStudy.ReferringPhysicianName}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="previewStudy.RequestedProcedureDescription != ''">
+                  <strong>Requested Procedure Description</strong></br>
+                  {{previewStudy.RequestedProcedureDescription}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="previewStudy.RequestingPhysician != ''">
+                  <strong>Requesting Physician</strong></br>
+                  {{previewStudy.RequestingPhysician}}
+                  <md-divider></md-divider>
+                </div>
+              </md-list>
+            </md-content>
+          </md-tab>
+          <md-tab label="Series">
+            <md-content class="md-padding">
+              <md-list>
+                <div ng-if="previewSeri.SeriesDescription != ''">
+                  <strong>Series Description</strong></br>
+                  {{previewSeri.SeriesDescription}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="previewSeri.SeriesNumber != ''">
+                  <strong>Series Number</strong></br>
+                  {{previewSeri.SeriesNumber}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="previewSeri.Modality != ''">
+                  <strong>Modality</strong></br>
+                  {{previewSeri.Modality}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="previewSeri.ContrastBolusAgent != ''">
+                  <strong>Contrast Bolus Agent</strong></br>
+                  {{previewSeri.ContrastBolusAgent}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="previewSeri.OperatorsName != ''">
+                  <strong>Operators Name</strong></br>
+                  {{previewSeri.OperatorsName}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="previewSeri.PerformedProcedureStepDescription != ''">
+                  <strong>Performed Procedure Step Description</strong></br>
+                  {{previewSeri.PerformedProcedureStepDescription}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="previewSeri.ProtocolName != ''">
+                  <strong>Protocol Name</strong></br>
+                  {{previewSeri.ProtocolName}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="previewSeri.SequenceName != ''">
+                  <strong>Sequence Name</strong></br>
+                  {{previewSeri.SequenceName}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="previewSeri.StationName != ''">
+                  <strong>Station Name</strong></br>
+                  {{previewSeri.StationName}}
+                  <md-divider></md-divider>
+                </div>
+              </md-list>
+            </md-content>
+          </md-tab>
+        </md-tabs>
+        <md-button ng-click="close()" class="md-primary">
+          Close Preview
+        </md-button>
+      </md-content>
+    </md-sidenav>
+  </md-content>
+  </div>
+  <!-- /page content -->
+
+
+
+
+</div>

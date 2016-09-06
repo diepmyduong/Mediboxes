@@ -1,0 +1,75 @@
+
+<script type="text/ng-template" id="requiredPasswordCofirm.tmpl.html">
+  <md-dialog aria-label="Share Options" class="w-xxl">
+    <form name="requriedPassword">
+      <md-dialog-content style="max-width:800px;max-height:810px;">
+        <md-content class="text-center layout-padding">
+          <h2 class="md-title">Password is required</h2>
+          <p class="ng-scope">Please enter password to access this box!</p>
+          <md-input-container>
+            <label>Password</label>
+            <input type="password" required name="password" ng-model="password" class="text-center">
+            <div ng-messages="password.$error">
+              <div ng-message="required">This is required.</div>
+            </div>
+          </md-input-container>
+        </md-content>
+      </md-dialog-content>
+      <div class="md-actions text-center" layout="row">
+        <p class="text-red" ng-if="passwordNotCorrect"><strong>Your password not correct.</strong></p>
+        <button class="btn btn-warning btn-rounded btn-ef btn-ef-6 btn-ef-6c ml-10" ng-show="checking">
+          Wait for second...
+        </button>
+        <button class="btn btn-primary btn-rounded btn-ef btn-ef-6 btn-ef-6c ml-10" ng-show="!checking" ng-click="submit()">
+          Submit!
+        </button>
+      </div>
+    </form>
+  </md-dialog>
+</script>
+
+<section ng-include="'views/dicomviewer/header.html'" id="header" class="scheme-black dicomviewer"></section>
+
+<div id="controls">
+
+  <aside ng-include="'views/dicomviewer/nav.html'" id="sidebar" class="scheme-black dicomviewer" ng-class="{'aside-fixed':main.settings.asideFixed}"></aside>
+
+  <aside ng-include="'views/dicomviewer/rightbar.html'" id="rightbar"></aside>
+
+</div>
+
+<div class="view-container" ui-view-container>
+
+  <section id="content" autoscroll="false" class="bg-default dker p-10" class="dicomviewer" >
+    <div style="position:absolute;" ng-drop="true" ng-drop-success="onDropComplete($data,$event,viewPort)"
+    ng-repeat="(key, viewPort) in viewPorts" ng-if="viewPort.actived"
+    ng-style="{'top': viewPort.top,
+              'bottom' : viewPort.bottom,
+              'right': viewPort.right,
+              'left' : viewPort.left}" >
+      <div style="width:100%;height:100%" class="m-0 well text-center bg-default dker b-a b-solid b-3x br-2"
+      ng-if="viewPort.isEmpty">
+        <div class="container w-420 p-15 text-center m-auto" style="margin-top:10%">
+          <div layout="row">
+            <h2 flex class="text-bold text-white">[ Drop your file here ]</h2>
+          </div>
+        </div>
+      </div>
+      <md-content style="width:100%;height:100%" class="bg-default dker b-a b-solid b-3x br-2"
+                ng-repeat="(key, previewData) in viewPort.previewSeries" ng-if="previewData.visible" id="dicom-viewport">
+
+        <sr-dicom-viewer total-frame="previewData.totalFrame" current-frame="previewData.currentFrame" resize="true" tools-enable="true" progressing="previewData.previewDataLoading" series="previewData.series" series-list-ref="preview.seriesListRef" tools-config="tools" style="width:100%;height:100%" ></sr-dicom-viewer>
+        <div layout id="stack-slider">
+            <div flex="20" layout layout-align="center center">
+                <input type="text" value="{{previewData.currentFrame + 1}} / {{previewData.totalFrame}}" aria-label="red" aria-controls="red-slider" class="text-center" readonly="readonly">
+            </div>
+            <md-slider flex="75" min="0" max="{{previewData.totalFrame - 1}}" ng-model="previewData.currentFrame" aria-label="red" id="red-slider" class>
+            </md-slider>
+          </div>
+      </md-content>
+    </div>
+    <md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="right" style="width:100%;max-width:100%;">
+      <div text-angular ng-model="study.report" class="p-20"></div>
+    </md-sidenav>
+  </section>
+</div>

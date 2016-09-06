@@ -1,0 +1,137 @@
+<div id="sidebar-wrap" ng-controller="NavCtrl" class="siri-sidebar-wrap">
+  <uib-accordion close-others="oneAtTime" slimscroll="{height: '100%'}">
+
+    <div uib-accordion-group is-open="true" ng-class="{'open': status.isPatientOpen, 'closed': !status.isPatientOpen}" >
+      <uib-accordion-heading>
+        Choose Study <i class="pull-right fa" ng-class="{'fa-angle-up': status.isPatientOpen, 'fa-angle-down': !status.isPatientOpen}"></i>
+      </uib-accordion-heading>
+      <ul id="navigation" nav-collapse ripple>
+        <li>
+          <a class="pt-0 pb-0">
+          <md-input-container class="pt-0 pb-0 md-greensea" style="width:100%">
+            <label class="md-greesea">Study</label>
+            <md-select ng-model="preview.studyId" class="bg-white text-darkgray">
+              <md-option ng-repeat="(key, study) in preview.studiesList" value="{{study.$id}}" >
+                <div layout>
+                  <p flex>{{study.StudyDescription}}</p>
+                </div>
+              </md-option>
+            </md-select>
+          </md-input-container> 
+          </a>
+        </li>
+        <!-- <li>
+          <a><strong>Patient Name</strong></br><small>{{patient.PatientName}}</small></a> 
+        </li>
+        <li>
+          <a><strong>Patient ID</strong></br><small>{{patient.PatientID}}</small></a>
+        </li>
+        <li>
+          <a><strong>Patient BirthDay</strong></br><small>{{patient.PatientBirthDay}}</small></a>
+        </li> -->
+      </ul>
+    </div>
+    <!-- <div uib-accordion-group is-open="status.isStudyOpen" ng-class="{'open': status.isStudyOpen, 'closed': !status.isStudyOpen}">
+      <uib-accordion-heading>
+        Study Infomation <i class="pull-right fa" ng-class="{'fa-angle-up': status.isStudyOpen, 'fa-angle-down': !status.isStudyOpen}"></i>
+      </uib-accordion-heading>
+      <ul id="navigation" nav-collapse ripple>
+        <li>
+          <a><strong>Study Description</strong></br><small>{{study.StudyDescription}}</small></a> 
+        </li>
+        <li>
+          <a><strong>Study Date</strong></br><small>{{study.StudyDate | date : 'dd/MM/yyyy'}}</small></a>
+        </li>
+        <li>
+          <a><strong>Study ID</strong></br><small>{{study.StudyID}}</small></a>
+        </li>
+        <li>
+          <a><strong>Study Description</strong></br><small>{{study.StudyDescription}}</small></a> 
+        </li>
+        <li>
+          <a><strong>Institution Name</strong></br><small>{{study.InstitutionName}}</small></a>
+        </li>
+        <li>
+          <a><strong>Accession Number</strong></br><small>{{study.AccessionNumber}}</small></a>
+        </li>
+        <li>
+          <a><strong>Referring Physician Name</strong></br><small>{{study.ReferringPhysicianName}}</small></a> 
+        </li>
+        <li>
+          <a><strong>Requested Procedure Description</strong></br><small>{{study.RequestedProcedureDescription}}</small></a>
+        </li>
+        <li>
+          <a><strong>Requesting Physician</strong></br><small>{{study.RequestingPhysician}}</small></a>
+        </li>
+      </ul>
+    </div>
+    <div uib-accordion-group is-open="status.isSeriesOpen" ng-class="{'open': status.isSeriesOpen, 'closed': !status.isSeriesOpen}">
+      <uib-accordion-heading>
+        Series Infomation <i class="pull-right fa" ng-class="{'fa-angle-up': status.isSeriesOpen, 'fa-angle-down': !status.isSeriesOpen}"></i>
+      </uib-accordion-heading>
+      <ul id="navigation" nav-collapse ripple>
+        <li>
+          <a><strong>Series Description</strong></br><small>{{previewSeries.SeriesDescription}}</small></a> 
+        </li>
+        <li>
+          <a><strong>Series Number</strong></br><small>{{previewSeries.SeriesNumber}}</small></a>
+        </li>
+        <li>
+          <a><strong>Modality</strong></br><small>{{previewSeries.Modality}}</small></a>
+        </li>
+        <li>
+          <a><strong>Contrast Bolus Agent</strong></br><small>{{previewSeries.ContrastBolusAgent}}</small></a> 
+        </li>
+        <li>
+          <a><strong>Operators Name</strong></br><small>{{previewSeries.OperatorsName}}</small></a>
+        </li>
+        <li>
+          <a><strong>Performed Procedure Step Description</strong></br><small>{{previewSeries.PerformedProcedureStepDescription}}</small></a>
+        </li>
+        <li>
+          <a><strong>Protocol Name</strong></br><small>{{previewSeries.ProtocolName}}</small></a> 
+        </li>
+        <li>
+          <a><strong>Sequence Name</strong></br><small>{{previewSeries.SequenceName}}</small></a>
+        </li>
+        <li>
+          <a><strong>Station Name</strong></br><small>{{previewSeries.StationName}}</small></a>
+        </li>
+      </ul>
+    </div> -->
+    <div ng-init="status.isThumbnailOpen = true" uib-accordion-group is-open="true" ng-class="{'open': status.isThumbnailOpen, 'closed': !status.isThumbnailOpen}" id="seriesList" ng-if="preview.seriesList">
+      <uib-accordion-heading>
+        Series List <i class="pull-right fa" ng-class="{'fa-angle-up': status.isThumbnailOpen, 'fa-angle-down': !status.isThumbnailOpen}"></i>
+      </uib-accordion-heading>
+      <ul id="navigation" nav-collapse ripple>
+        <li ng-repeat="(key, series) in preview.seriesList"
+            ng-init="previewSeries[key].previewLoading = false;
+                      previewSeries[key].totalFrame = 0;
+                      previewSeries[key].currentFrame = 0;
+                      previewSeries[key].visible = false;
+                      previewSeries[key].series = series;"
+            >
+          <a>
+            <div ng-drag="true" ng-drag-data="key" ng-drag-success="onDragComplete($data,$event)" ng-center-anchor="true">
+              <md-grid-list
+              md-cols-sm="1" md-cols-md="1" md-cols-gt-md="1"
+              md-row-height-gt-md="1:1" md-row-height="2:2"
+              md-gutter="12px" md-gutter-gt-sm="8px" class="portlet">
+                <md-grid-tile class="bg-default" md-colspan="1"
+                  ng-click="">
+                  <md-progress-linear md-mode="indeterminate" style="position: absolute" ng-if="previewLoadings[key]"></md-progress-linear>
+                  <sr-dicom-viewer resize="true" series="series" series-list-ref="preview.seriesListRef" style="width:100%;height:100%"></sr-dicom-viewer>
+                  <md-grid-tile-footer>
+                    <h3>{{series.SeriesDescription}}</h3>
+                  </md-grid-tile-footer>
+                </md-grid-tile >
+              </md-grid-list> 
+            </div>
+            
+          </a>
+        </li>
+      </ul>
+    </div>
+
+  </uib-accordion>
+</div>

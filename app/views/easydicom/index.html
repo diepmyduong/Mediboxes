@@ -1,0 +1,43 @@
+<style type="text/css" media="screen">
+ ot-publisher,ot-subscriber,ot-layout {
+ 	 position: relative;
+     display: block;
+     overflow: hidden;
+ }
+</style>
+<div class="page page-core page-login" id="easy-dicom">
+  <div class="container w-420 p-15 text-center m-auto" style="margin-top:10%">
+    <div layout="row">
+      <!-- <h1 flex class="text-bold text-white">Enter your box's name and share your friends</h1> -->
+      <img src="../../images/mediboxes/logo_128.png" style="width:100%" />
+    </div>
+    <div layout="row" ng-if="alert">
+      <div class="alert alert-danger" flex="100" >
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong>{{alert}}</strong>
+      </div>
+    </div>
+    <div layout="row">
+       <div class="input-group">
+        <input type="text" class="form-control input-lg" placeholder="example: mediboxes" ng-model="boxName">
+        <span class="input-group-btn">
+          <button class="btn btn-greensea btn-lg text-bold" type="button" ng-click="createRoom()">Create!</button>
+          <!-- <button class="btn btn-greensea btn-lg text-bold" type="button" ng-click="liveShare($event)">LiveShare!</button>
+          <button class="btn btn-greensea btn-lg text-bold" type="button" ng-click="testSend($event)">Test</button> -->
+        </span>
+      </div>
+    </div>
+  
+
+</div>
+<!-- <div class="container w-420 p-15 text-center m-auto bg-white" style="height:300px">
+  	<ot-layout props="{animate:true}" style="width:100%;height:100%;">
+	    <ot-subscriber ng-repeat="stream in streams" 
+	        stream="stream" 
+	        props="{style: {nameDisplayMode: 'off'}}">
+	    </ot-subscriber>
+	    <ot-publisher id="publisher" 
+	        props="{style: {nameDisplayMode: 'off'}, frameRate: 30}">
+	    </ot-publisher>
+	</ot-layout>
+  </div> -->

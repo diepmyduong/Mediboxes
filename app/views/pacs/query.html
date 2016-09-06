@@ -1,0 +1,83 @@
+<div class="page page-folder">
+  <!-- page header -->
+  <div class="pageheader">
+
+    <h2>{{page.title}} <span>// {{page.subtitle}}</span></h2>
+
+    <div class="page-bar">
+
+      <ul class="page-breadcrumb">
+        <li>
+          <a ui-sref="app.pages.folder"><i class="fa fa-home"></i> {{main.title}}</a>
+        </li>
+        <li>
+          <a href="javascript:;">PACS</a>
+        </li>
+        <li>
+          <a ui-sref="app.pacs.query">Query</a>
+        </li>
+
+      </ul>
+
+    </div>
+
+  </div>
+  <!-- /page header -->
+
+
+
+
+
+
+  <!-- page content -->
+  <div class="pagecontent">
+  <md-content >
+    <md-toolbar class="bg-greensea">
+      <div class="md-toolbar-tools">
+        <h2>
+          <strong>PACS Query</strong>
+        </h2>
+
+        <span flex></span>
+
+        <a id="full" md-position-mode="target-right target" href tile-control-fullscreen ng-click="isFullscreen02 = !isFullscreen02">
+          <fa name="expand"></fa>
+        </a>
+      </div>
+    </md-toolbar>
+    <section class="tile" fullscreen="isFullscreen02">
+
+      <!-- tile body -->
+      <div class="tile-body" >
+        <table ng-table="test" show-filter="true" class="table table-custom">
+          <tr ng-repeat="study in $data">
+            <td data-title="'Patient Name'" sortable="'patientName'" filter="{ 'patientName': 'text' }">
+              {{study.patientName}}
+            </td>
+            <td data-title="'Study Description'" sortable="'studyDescription'" filter="{ 'studyDescription': 'text' }">
+              {{study.studyDescription}}
+            </td>
+            <td data-title="'Study Date'" sortable="'studyDate'" filter="{ 'studyDate': 'text' }">
+              {{study.studyDate | date }}
+            </td>
+            <td data-title="'Modality'" sortable="'modality'" filter="{ 'modality': 'text' }">
+              {{study.modality}}
+            </td>
+            <td data-title="'Action'">
+              
+            </td>
+          </tr>
+        </table>
+
+      </div>
+      <!-- /tile body -->
+
+    </section>
+  </md-content>
+  </div>
+  <!-- /page content -->
+
+
+
+
+</div>

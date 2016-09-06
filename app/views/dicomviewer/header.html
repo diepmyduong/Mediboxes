@@ -1,0 +1,287 @@
+<header class="clearfix">
+
+  <!-- Branding -->
+  <div class="branding scheme-black">
+    <a class="brand" href="/" ng-if="!patient">
+      <span><strong>MediBoxes </strong></span>
+    </a>
+    <!-- <a class="brand" ui-sref="app.pages.folder" ng-if="!patient">
+      <span><strong>MediaBoxes </strong></span>
+    </a>
+    <a class="brand" ui-sref="app.pages.patient({SOPClassUID:patient.$id})" ng-if="patient">
+      <span><strong>MediaBoxes </strong></span>
+    </a> -->
+    <a href="javascript:;" class="offcanvas-toggle visible-xs-inline" offcanvas-sidebar><i class="fa fa-bars"></i></a>
+  </div>
+  <!-- Branding end -->
+
+
+
+  <!-- Left-side navigation -->
+  <ul class="nav-left pull-left list-unstyled list-inline">
+    <li class="">
+      <a href="javascript:;" collapse-sidebar>
+        <fa name="outdent"></fa>
+      </a>
+    </li>
+    <li class="siri-nav-toolsbar siri-sm" style="display:none" ng-class="{active : tools.wwwc}">
+      <a href="javascript:;" ng-click="showGridBottomSheet($event)">
+        <fa name="ellipsis-v"></fa>
+        <md-tooltip>
+          Open toolsbar
+        </md-tooltip>
+      </a>
+      <script type="text/ng-template" id="bottom-tools-sheet-template.html">
+        <md-bottom-sheet class="bottomSheet p-10" style="transform: translate3d(0, 0px, 0); overflow-x: scroll;" >
+          <md-grid-list md-gutter="1em" md-row-height="70px" md-cols="{{$parent.numberOfVisibleTools}}" style="    width: 1000px;">
+            <md-grid-tile ng-repeat="(key, tool) in $parent.tools" ng-if="tool.visible" ng-click="listItemClick(key)">
+              <a href class="icon icon-success icon-ef-3 icon-ef-3a siri-custom-icon"
+                
+                ng-class="{'hover-color' : !tool.actived, 'icon-color' : tool.actived}">
+                <fa name="{{tool.icon}}"></fa>
+                <md-tooltip>
+                  {{tool.tooltip}}
+                </md-tooltip>
+              </a>
+            </md-grid-tile>
+          </md-grid-list>
+          <!-- <ul class="list-inline" style="">
+            <li ng-repeat="(key, tool) in $parent.tools" ng-if="tool.visible" ng-click="listItemClick(key)">
+              <a href class="icon icon-success icon-ef-3 icon-ef-3a siri-custom-icon"
+                
+                ng-class="{'hover-color' : !tool.actived, 'icon-color' : tool.actived}">
+                <fa name="{{tool.icon}}"></fa>
+                <md-tooltip>
+                  {{tool.tooltip}}
+                </md-tooltip>
+              </a>
+            </li>
+          </ul>
+          <p class="m-0"> -->
+            
+          </p>
+        </md-bottom-sheet>
+      </script>
+    </li>
+    <li class="siri-nav-toolsbar siri-md" ng-repeat="(key, tool) in tools" 
+        ng-class="{active : tool.actived}" ng-if="tool.visible">
+      <a href="javascript:;" ng-click="activeTools(key)">
+        <fa name="{{tool.icon}}"></fa>
+        <md-tooltip>
+          {{tool.tooltip}}
+        </md-tooltip>
+      </a>
+    </li>
+    <li class="dropdown divided-right settings siri-nav-toolsbar siri-md" uib-dropdown>
+      <a href class="dropdown-toggle" uib-dropdown-toggle>
+        <fa name="th-large"></fa>
+      </a>
+      <ul class="dropdown-menu with-arrow animated littleFadeInUp" role="menu">
+        <li>
+          <a ng-click="setupViewPort(1,1)">
+            <div class="form-group ng-scope">
+              <div class="row">
+                <label class="col-xs-8 control-label">1 x 1</label>
+              </div>
+            </div>
+          </a>
+        </li>
+
+        <li>
+          <a ng-click="setupViewPort(2,2)">
+            <div class="form-group ng-scope">
+              <div class="row">
+                <label class="col-xs-8 control-label">2 x 2</label>
+              </div>
+            </div>
+          </a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+  <!-- Left-side navigation end -->
+
+  <!-- Right-side navigation -->
+  <ul class="nav-right pull-right list-inline">
+    <li class="siri-md" ng-if="isOwner">
+      <a href="javascript:;" ng-click="">
+        <fa name="unlock"></fa>
+        <md-tooltip>
+          Unclocked
+        </md-tooltip>
+      </a>
+    </li>
+    <li class="siri-md" ng-if="isOwner">
+      <a href="javascript:;" ng-click="showShareOption($event)">
+        <fa name="share-alt"></fa>
+        <md-tooltip>
+          Share Options
+        </md-tooltip>
+      </a>
+      <script type="text/ng-template" id="shareOptions.tmpl.html">
+        <md-dialog aria-label="Share Options" class="w-xxl">
+          <form>
+            <md-toolbar class="bg-greensea">
+              <div class="md-toolbar-tools">
+                <h2>Share Options</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="closeDialog()">
+                  <md-icon md-font-icon="zmdi zmdi-close" aria-label="Close dialog"></md-icon>
+                </md-button>
+              </div>
+            </md-toolbar>
+            <md-dialog-content style="max-width:800px;max-height:810px; min-width:50%;height:350px;">
+              <md-content >
+                <uib-tabset justified="true">
+                  <uib-tab heading="General">
+                    <div class="wrap-reset" >
+                      <md-list>
+                        <md-list-item>
+                          <p> Allow annotating on study </p>
+                          <md-switch class="md-greensea" ng-model="shareOptions.allowAnnotating"></md-switch>
+                        </md-list-item>
+                        <md-list-item>
+                          <p> Password protect </p>
+                          <md-switch class="md-greensea" ng-model="shareOptions.passwordRequired"></md-switch>
+                        </md-list-item>
+                        <md-list-item ng-if="shareOptions.passwordRequired">
+                          <md-input-container flex class="md-greensea">
+                            <label>Password</label>
+                            <input type="password" ng-model="shareOptions.password">
+                          </md-input-container>
+                        </md-list-item>
+                        <!-- <md-list-item>
+                          <p> Hotspots enabled </p>
+                          <md-switch class="md-greensea" ng-model="shareOptions.hotspots"></md-switch>
+                        </md-list-item> -->
+                        <md-list-item>
+                          <p> Attach report </p>
+                          <md-switch class="md-greensea" ng-model="shareOptions.attachReport"></md-switch>
+                        </md-list-item>
+                        <md-list-item>
+                          <p> Require user identification </p>
+                          <md-switch class="md-greensea" ng-model="shareOptions.requireUserIdentification"></md-switch>
+                        </md-list-item>
+                        <md-list-item>
+                          <p> Anonymise study </p>
+                          <md-switch class="md-greensea" ng-model="shareOptions.anonymiseStudy"></md-switch>
+                        </md-list-item>
+                        <md-list-item>
+                          <p> Link Expiration </p>
+                          <md-switch class="md-greensea" ng-model="shareOptions.linkExpiration"></md-switch>
+                        </md-list-item>
+                        <md-list-item ng-if="shareOptions.linkExpiration">
+                          <md-datepicker ng-model="shareOptions.expirationDate" md-placeholder="Enter date"
+                            md-min-date="minDate"></md-datepicker>
+                        </md-list-item>
+                      </md-list>
+                    </div>
+                  </uib-tab>
+                  <uib-tab heading="Email">
+                    <div class="wrap-reset" >
+                      <md-content class="autocomplete chipsdemoContactChips" ng-controller="mtChipsContactChipDemoCtrl as ctrl" layout="column">
+                        <button flex class="btn btn-warning btn-rounded btn-ef btn-ef-6 btn-ef-6c ml-10" ngclipboard data-clipboard-target="#sharedURL">
+                          Send Email
+                        </button>
+                        <md-contact-chips
+                          ng-model="ctrl.contacts"
+                          md-contacts="ctrl.querySearch($query)"
+                          md-contact-name="name"
+                          md-contact-image="image"
+                          md-contact-email="email"
+                          md-require-match="true"
+                          md-highlight-flags="i"
+                          filter-selected="ctrl.filterSelected"
+                          placeholder="To">
+                        </md-contact-chips>
+                        
+                        <md-list class="fixedRows">
+                        <md-content style="height:250px">
+                          <md-subheader class="md-no-sticky">Contacts</md-subheader>
+                          <md-list-item class="md-2-line" ng-repeat="(index, contact) in ctrl.allContacts"
+                                        ng-if="ctrl.contacts.indexOf(contact) < 0">
+                            <img ng-src="{{contact.image}}" class="md-avatar" alt="{{contact.name}}" />
+                            <div class="md-list-item-text">
+                              <h3>{{contact.name}}</h3>
+                              <p>{{contact.email}}</p>
+                            </div>
+                          </md-list-item>
+                          <!-- <md-list-item class="md-2-line contact-item selected" ng-repeat="(index, contact) in ctrl.contacts">
+                            <img ng-src="{{contact.image}}" class="md-avatar" alt="{{contact.name}}" />
+                            <div class="md-list-item-text compact">
+                              <h3>{{contact.name}}</h3>
+                              <p>{{contact.email}}</p>
+                            </div>
+                          </md-list-item> -->
+                        </md-content>
+                        </md-list>
+                        
+                      </md-content>
+                    </div>
+                  </uib-tab>
+                  <uib-tab heading="Download">
+                    <div class="wrap-reset">
+                      <div layout="row" layout-align="center">
+                        <fa name="download" size="5"></fa>
+                      </div>
+                      <div layout="row" layout-align="center">
+                        <h4>Download a zip version of the study</h4>
+                      </div>
+                      <div layout="row" layout-align="center">
+                        <uib-progressbar ng-inti="downloading = false" flex-gt-sm="60" flex="100" ng-class="{'progress-striped' : downloading, 'active' : downloading}" ng-click="downloading = true" value="100" type="{{downloading?'warning':'primary'}}" style="height:35px">
+                          <p class="m-5" ng-if="!downloading">Start Download</p>
+                          <p class="m-5" ng-if="downloading">Dowloading...</p>
+                        </uib-progressbar>
+                      </div>
+                      
+                    </div>
+                  </uib-tab>
+                </uib-tabset>
+                
+              </md-content>
+            </md-dialog-content>
+            <div class="md-actions" layout="row">
+              <div flex>
+                <input type="text" id="sharedURL" readonly class="form-control" ng-model="shareOptions.shareUrl" placeholder="URL">
+              </div>
+              <button class="btn btn-warning btn-rounded btn-ef btn-ef-6 btn-ef-6c ml-10" ngclipboard data-clipboard-target="#sharedURL">
+                Copy
+              </button>
+              <button class="btn btn-success btn-rounded btn-ef btn-ef-6 btn-ef-6c ml-10" ng-click="apply(shareOptions)">
+                Apply
+              </button>
+            </div>
+          </form>
+        </md-dialog>
+      </script>
+    </li>
+    <li class="siri-md">
+      <a href="javascript:;" ng-click="liveShare($event)">
+        <fa name="rss"></fa>
+        <md-tooltip>
+          Live Share
+        </md-tooltip>
+      </a>
+    </li>
+    <li class="siri-md">
+      <a href="javascript:;" ng-click="toggleRight()">
+        <fa name="file-word-o"></fa>
+        <md-tooltip>
+          Report
+        </md-tooltip>
+      </a>
+    </li>
+    <li class="toggle-right-sidebar">
+      <a href="javascript:;" ng-click="main.settings.rightbarShow = !main.settings.rightbarShow">
+        <fa name="video-camera"></fa>
+        <md-tooltip>
+          Video Call
+        </md-tooltip>
+      </a>
+    </li>
+  </ul>
+  <!-- Right-side navigation end -->
+
+
+
+</header>

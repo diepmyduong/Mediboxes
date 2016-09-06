@@ -1,0 +1,141 @@
+/*Tabs config*/
+.siri-tabs md-tab-item.md-tab.ng-scope.ng-isolate-scope.md-ink-ripple.md-active {
+    color: rgba(22,160,133,1);
+}
+md-tabs.siri-tabs > md-tabs-wrapper > md-tabs-canvas > md-pagination-wrapper > md-tab-item:not([disabled]) {
+    color: rgba(22,160,133,0.5);
+}
+md-tabs.siri-tabs > md-tabs-wrapper > md-tabs-canvas > md-pagination-wrapper > md-ink-bar {
+    color: rgba(22,160,133,1);
+    background: rgba(22,160,133,1);
+}
+
+/*Brand*/
+
+/*Nav toolbar*/
+.dicomviewer#header.scheme-black .nav-left > li.siri-nav-toolsbar:hover,
+.dicomviewer#header.scheme-black .nav-left > li.siri-nav-toolsbar.active {
+	border-bottom: 2px solid red;
+}
+.icon.icon-success.siri-custom-icon.icon-color:before {
+	background-color: white;
+}
+@media only screen and (max-width: 1085px) {
+	.siri-nav-toolsbar.siri-md{
+		display: none !important;
+	}
+	.siri-nav-toolsbar.siri-sm{
+		display: inline-block !important;
+	}
+}
+@media only screen and (max-width: 768px) {
+	header {
+		height: 90px;
+	}
+	.appWrapper.aside-fixed #sidebar {
+	    top: 90px;
+	}
+}
+
+/*Sidebar*/
+/*.dicomviewer#sidebar .slimScrollDiv {
+	overflow: visible !important;
+}
+.dicomviewer#sidebar uib-accordion {
+	overflow: visible !important;
+}*/
+uib-accordion.custom .panel-group .panel > .panel-heading .panel-title > a {
+	font-size: 15px !important;
+	color: rgba(255, 255, 255, 0.8) !important;
+}
+.dicomviewer#sidebar uib-accordion .panel-group .panel > .panel-heading .panel-title > a {
+	font-size: 15px;
+	color: rgba(255, 255, 255, 0.8)
+}
+.sidebar-sm .dicomviewer#sidebar uib-accordion .panel-group .panel,
+ .sidebar-xs .dicomviewer#sidebar uib-accordion .panel-group .panel,
+ .sidebar-sm .dicomviewer#sidebar md-grid-tile-footer,
+ .sidebar-xs .dicomviewer#sidebar md-grid-tile-footer {
+	display: none;
+}
+.sidebar-sm .dicomviewer#sidebar uib-accordion .panel-group #seriesList.panel,
+ .sidebar-xs .dicomviewer#sidebar uib-accordion .panel-group #seriesList.panel {
+	display: block;
+}
+#seriesList md-grid-list md-grid-tile md-grid-tile-footer {
+	background: rgba(0, 0, 0, 0.5);
+}
+#stack-slider {
+	color: black;
+	position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+/*Switch Style*/
+/*md-greensea*/
+md-switch.md-default-theme.md-checked.md-greensea, md-switch.md-checked.md-greensea .md-bar {
+	background-color: rgba(22,160,133,0.5);
+}
+md-switch.md-default-theme.md-checked.md-greensea , md-switch.md-checked.md-greensea .md-thumb {
+    background-color: rgb(22,160,133);
+}
+
+/*Input Style*/
+md-input-container:not(.md-input-invalid).md-input-focused.md-greensea label {
+	color: rgb(22,160,133);
+}
+md-input-container:not(.md-input-invalid).md-input-focused.md-greensea .md-input {
+	border-color: rgb(22,160,133);
+}
+md-input-container:not(.md-input-invalid).md-input-has-value label.md-greesea {
+    color: rgb(22,160,133);
+}
+
+
+/*Easy Dicom*/
+#easy-dicom {
+	background: url(../images/bg31.jpg) no-repeat center center fixed; 
+	  -webkit-background-size: cover;
+	  -moz-background-size: cover;
+	  -o-background-size: cover;
+	  background-size: cover;
+}
+
+.center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -210px;
+    margin-top: -50px; 
+}​
+
+
+/*Mediboxes*/
+#mediboxes-body {
+}
+#mediboxes-body #header.transparent-header,
+#mediboxes-body #header.transparent-header nav,
+#mediboxes-body #header.transparent-header nav ul li>a{
+	background-color: transparent;
+}
+#diboxes-body #header nav  {
+	background-color: white;
+}
+#mediboxes-body #header.transparent-header nav{
+	background-color: transparent;
+}
+
+/*Editor*/ 
+.ta-text.ta-editor.form-control {
+	min-height: 300px;
+	overflow: scroll;
+	width: 100%;
+	height: auto;
+	max-height: 500px;
+}
+.ta-text.ta-editor.form-control .ng-pristine {
+	min-height: 300px;
+	height: auto;
+	max-height: 500px;
+}

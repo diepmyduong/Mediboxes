@@ -1,0 +1,16 @@
+
+<md-grid-list
+  md-cols-sm="1" md-cols-md="1" md-cols-gt-md="1"
+  md-row-height-gt-md="1:1" md-row-height="2:2"
+  md-gutter="12px" md-gutter-gt-sm="8px" class="portlet m-10" ng-if="main.settings.rightbarShow">
+
+  <md-grid-tile md-colspan="1"
+    ng-click="">
+    <ot-publisher props="{name: 'Adam'}"></ot-publisher>
+  </md-grid-tile >
+
+  <md-grid-tile  md-colspan="1"
+    ng-click="" ng-repeat="stream in streams">
+    <ot-subscriber  stream="stream" ></ot-subscriber>
+  </md-grid-tile >
+</md-grid-list> 

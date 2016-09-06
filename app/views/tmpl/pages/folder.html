@@ -1,0 +1,414 @@
+<div class="page page-folder">
+  <!-- page header -->
+  <div class="pageheader">
+
+    <h2>{{page.title}} <span>// {{page.subtitle}}</span></h2>
+
+    <div class="page-bar">
+
+      <ul class="page-breadcrumb">
+        <li>
+          <a ui-sref="app.pages.profile"><i class="fa fa-home"></i> {{main.title}}</a>
+        </li>
+        <li>
+          <a href="javascript:;">Folders</a>
+        </li>
+        <li>
+          <a ui-sref="app.pages.folder">{{page.title}}</a>
+        </li>
+      </ul>
+
+    </div>
+
+  </div>
+  <!-- /page header -->
+
+
+
+
+
+
+  <!-- page content -->
+  <div class="pagecontent">
+  <md-content fullscreen="isFullscreen02" nv-file-drop="" uploader="uploader">
+    <uib-progressbar class="progress-striped active not-rounded m-0" max="totalFileUpload" value="fileUploaded" type="success" ng-if="uploading && !uploadPaused"><b>{{fileUploaded}} / {{totalFileUpload}}</b></uib-progressbar>
+    <uib-progressbar class="progress-striped active not-rounded m-0" max="totalFileUpload" value="fileUploaded" type="danger" ng-if="uploading && uploadPaused"><b>{{fileUploaded}} / {{totalFileUpload}}</b></uib-progressbar>
+    <md-progress-linear md-mode="indeterminate" ng-show="patientsLoading"></md-progress-linear>
+    <md-toolbar class="bg-greensea">
+      <div class="md-toolbar-tools">
+        <h2>
+          <strong>Studies List</strong>
+        </h2>
+
+        <span flex></span>
+
+        <a id="full" md-position-mode="target-right target" href tile-control-fullscreen ng-click="isFullscreen02 = !isFullscreen02">
+          <fa name="expand"></fa>
+        </a>
+      </div>
+    </md-toolbar>
+    <md-content style="height: 500px;" class="bg-white" >
+
+      <section class="tile" >
+
+        <!-- tile body -->
+        <div class="tile-body" >
+          <table ng-table="test" show-filter="true" class="table table-custom">
+            <tr ng-repeat="(key,study) in $data">
+              <td data-title="'Patient Name'" sortable="'PatientName'" filter="{ 'PatientName': 'text' }">
+                {{study.PatientName}}
+              </td>
+              <td data-title="'Study Description'" sortable="'StudyDescription'" filter="{ 'StudyDescription': 'text' }">
+                {{study.StudyDescription}}
+              </td>
+              <td data-title="'Study Date'" sortable="'StudyDate'" filter="{ 'StudyDate': 'select' }" filter-data="dateSelect">
+                {{study.StudyDate | date: 'd-MM-yyyy'}}
+              </td>
+              <td data-title="'Modality'" sortable="'Modality'" filter="{ 'Modality': 'text' }">
+                {{study.Modality}}
+              </td>
+              <td data-title="'Action'">
+                <a class="btn" ng-click="preview(key,study)">
+                  <md-tooltip md-direction="left">Preview</md-tooltip>
+                  <fa name="eye" class="text-greensea"></fa>
+                </a>
+                <a class="btn" ng-if="study.shareOptions.isLocked" ng-click="unclockStudy(study.$id)">
+                  <md-tooltip md-direction="top">Locked</md-tooltip>
+                  <fa name="lock" class="text-greensea"></fa>
+                </a>
+                <a class="btn" ng-if="!study.shareOptions.isLocked" ng-click="clockStudy(study.$id)">
+                  <md-tooltip md-direction="top">Public</md-tooltip>
+                  <fa name="unlock" class="text-greensea"></fa>
+                </a>
+                <a class="btn" ng-if="!study.shareOptions.isLocked" ng-click="showShareOptions(study.$id)">
+                  <md-tooltip md-direction="top">Share Options</md-tooltip>
+                  <fa name="gears" class="text-greensea"></fa>
+                </a>
+              </td>
+            </tr>
+          </table>
+          <script type="text/ng-template" id="shareOptions.tmpl.html">
+            <md-dialog aria-label="Share Options" class="w-xxl">
+              <form>
+                <md-toolbar class="bg-greensea">
+                  <div class="md-toolbar-tools">
+                    <h2>Share Options</h2>
+                    <span flex></span>
+                    <md-button class="md-icon-button" ng-click="closeDialog()">
+                      <md-icon md-font-icon="zmdi zmdi-close" aria-label="Close dialog"></md-icon>
+                    </md-button>
+                  </div>
+                </md-toolbar>
+                <md-dialog-content style="max-width:800px;max-height:810px; min-width:50%;height:350px;">
+                  <md-content >
+                    <uib-tabset justified="true">
+                      <uib-tab heading="General">
+                        <div class="wrap-reset" >
+                          <md-list>
+                            <md-list-item>
+                              <p> Allow annotating on study </p>
+                              <md-switch class="md-greensea" ng-model="shareOptions.allowAnnotating"></md-switch>
+                            </md-list-item>
+                            <md-list-item>
+                              <p> Password protect </p>
+                              <md-switch class="md-greensea" ng-model="shareOptions.passwordRequired"></md-switch>
+                            </md-list-item>
+                            <md-list-item ng-if="shareOptions.passwordRequired">
+                              <md-input-container flex class="md-greensea">
+                                <label>Password</label>
+                                <input type="password" ng-model="shareOptions.password">
+                              </md-input-container>
+                            </md-list-item>
+                            <!-- <md-list-item>
+                              <p> Hotspots enabled </p>
+                              <md-switch class="md-greensea" ng-model="shareOptions.hotspots"></md-switch>
+                            </md-list-item> -->
+                            <md-list-item>
+                              <p> Attach report </p>
+                              <md-switch class="md-greensea" ng-model="shareOptions.attachReport"></md-switch>
+                            </md-list-item>
+                            <md-list-item>
+                              <p> Require user identification </p>
+                              <md-switch class="md-greensea" ng-model="shareOptions.requireUserIdentification"></md-switch>
+                            </md-list-item>
+                            <md-list-item>
+                              <p> Anonymise study </p>
+                              <md-switch class="md-greensea" ng-model="shareOptions.anonymiseStudy"></md-switch>
+                            </md-list-item>
+                            <md-list-item>
+                              <p> Link Expiration </p>
+                              <md-switch class="md-greensea" ng-model="shareOptions.linkExpiration"></md-switch>
+                            </md-list-item>
+                            <md-list-item ng-if="shareOptions.linkExpiration">
+                              <md-datepicker ng-model="shareOptions.expirationDate" md-placeholder="Enter date"
+                                md-min-date="minDate"></md-datepicker>
+                            </md-list-item>
+                          </md-list>
+                        </div>
+                      </uib-tab>
+                      <uib-tab heading="Email">
+                        <div class="wrap-reset" >
+                          <md-content class="autocomplete chipsdemoContactChips" ng-controller="mtChipsContactChipDemoCtrl as ctrl" layout="column">
+                            <button flex class="btn btn-warning btn-rounded btn-ef btn-ef-6 btn-ef-6c ml-10" ngclipboard data-clipboard-target="#sharedURL">
+                              Send Email
+                            </button>
+                            <md-contact-chips
+                              ng-model="ctrl.contacts"
+                              md-contacts="ctrl.querySearch($query)"
+                              md-contact-name="name"
+                              md-contact-image="image"
+                              md-contact-email="email"
+                              md-require-match="true"
+                              md-highlight-flags="i"
+                              filter-selected="ctrl.filterSelected"
+                              placeholder="To">
+                            </md-contact-chips>
+                            
+                            <md-list class="fixedRows">
+                            <md-content style="height:250px">
+                              <md-subheader class="md-no-sticky">Contacts</md-subheader>
+                              <md-list-item class="md-2-line" ng-repeat="(index, contact) in ctrl.allContacts"
+                                            ng-if="ctrl.contacts.indexOf(contact) < 0">
+                                <img ng-src="{{contact.image}}" class="md-avatar" alt="{{contact.name}}" />
+                                <div class="md-list-item-text">
+                                  <h3>{{contact.name}}</h3>
+                                  <p>{{contact.email}}</p>
+                                </div>
+                              </md-list-item>
+                              <!-- <md-list-item class="md-2-line contact-item selected" ng-repeat="(index, contact) in ctrl.contacts">
+                                <img ng-src="{{contact.image}}" class="md-avatar" alt="{{contact.name}}" />
+                                <div class="md-list-item-text compact">
+                                  <h3>{{contact.name}}</h3>
+                                  <p>{{contact.email}}</p>
+                                </div>
+                              </md-list-item> -->
+                            </md-content>
+                            </md-list>
+                            
+                          </md-content>
+                        </div>
+                      </uib-tab>
+                      <uib-tab heading="Download">
+                        <div class="wrap-reset">
+                          <div layout="row" layout-align="center">
+                            <fa name="download" size="5"></fa>
+                          </div>
+                          <div layout="row" layout-align="center">
+                            <h4>Download a zip version of the study</h4>
+                          </div>
+                          <div layout="row" layout-align="center">
+                            <uib-progressbar ng-inti="downloading = false" flex-gt-sm="60" flex="100" ng-class="{'progress-striped' : downloading, 'active' : downloading}" ng-click="downloading = true" value="100" type="{{downloading?'warning':'primary'}}" style="height:35px">
+                              <p class="m-5" ng-if="!downloading">Start Download</p>
+                              <p class="m-5" ng-if="downloading">Dowloading...</p>
+                            </uib-progressbar>
+                          </div>
+                          
+                        </div>
+                      </uib-tab>
+                    </uib-tabset>
+                    
+                  </md-content>
+                </md-dialog-content>
+                <div class="md-actions" layout="row">
+                  <div flex>
+                    <input type="text" id="sharedURL" readonly class="form-control" ng-model="shareOptions.shareUrl" placeholder="URL">
+                  </div>
+                  <button class="btn btn-warning btn-rounded btn-ef btn-ef-6 btn-ef-6c ml-10" ngclipboard data-clipboard-target="#sharedURL">
+                    Copy
+                  </button>
+                  <button class="btn btn-success btn-rounded btn-ef btn-ef-6 btn-ef-6c ml-10" ng-click="apply(shareOptions)">
+                    Apply
+                  </button>
+                </div>
+              </form>
+            </md-dialog>
+          </script>
+        </div>
+        <!-- /tile body -->
+
+      </section>
+    </md-content>
+    <md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="right">
+      <md-toolbar class="md-theme-light bg-greensea">
+        <div class="md-toolbar-tools">
+          <h1 class="md-toolbar-tools">Preview</h1>
+          <span flex></span>
+          <md-menu md-position-mode="target-right target">
+            <md-button aria-label="More" class="md-icon-button" ng-click="$mdOpenMenu()">
+              <md-icon md-menu-origin md-font-icon="zmdi zmdi-more-vert"></md-icon>
+            </md-button>
+            <md-menu-content width="4">
+              <md-menu-item>
+                <md-button ng-click="openDICOMViewer(previewStudy)">
+                  Open DICOM Viewer
+                </md-button>
+              </md-menu-item>
+            </md-menu-content>
+          </md-menu>
+        </div>
+      </md-toolbar>
+      <md-content ng-controller="StudyPreviewCtrl" layout-padding>
+        <md-grid-list
+          md-cols-sm="4" md-cols-md="4" md-cols-gt-md="4"
+          md-row-height-gt-md="1:1" md-row-height="2:2"
+          md-gutter="12px" md-gutter-gt-sm="8px" ng-if="previewStudy">
+          <md-grid-tile md-colspan="1" md-rowspan="3">
+            <md-content style="width:100%;height:100%;">
+                <md-grid-list
+                md-cols-sm="1" md-cols-md="1" md-cols-gt-md="1"
+                md-row-height-gt-md="1:1" md-row-height="2:2"
+                md-gutter="12px" md-gutter-gt-sm="8px">
+                  <md-grid-tile class="bg-greensea" md-colspan="1"
+                    ng-repeat="(key, series) in seriesList"
+                    ng-init="previewSeries[key].previewLoading = false;
+                              previewSeries[key].visible = false;
+                              previewSeries[key].series = series;"
+                    ng-click="selectPreviewSeries(key)">
+                    <md-progress-linear md-mode="indeterminate" style="position: absolute; top:0" ng-if="previewSeries[key].previewLoading"></md-progress-linear>
+                  <sr-dicom-viewer progressing="previewSeries[key].previewLoading" resize="true" series="series" series-list-ref="seriesListRef" style="width:100%;height:100%"></sr-dicom-viewer>
+                  </md-grid-tile >
+                </md-grid-list>
+            </md-content>
+          </md-grid-tile>
+          <md-grid-tile class="bg-blue dicomviewer" md-colspan="3" md-rowspan="3"
+                        ng-repeat="(key, preview) in previewSeries" ng-if="key == previewIndex">
+            <md-progress-linear md-mode="indeterminate" style="position: absolute; top:0" ng-if="preview.previewLoading"></md-progress-linear>
+                    <sr-dicom-viewer progressing="preview.previewLoading" tools-config="previewToolsCofig" tools-enable="true" scroll-indicator="true" resize="true" series="preview.series" series-list-ref="seriesListRef" style="width:100%;height:100%"></sr-dicom-viewer>
+            </sr-dicom-viewer>
+            
+          </md-grid-tile>
+        </md-grid-list>
+        <md-tabs md-dynamic-height md-border-bottom class="siri-tabs">
+          <md-tab label="Patient">
+            <md-content class="md-padding">
+              <md-list>
+                <div ng-if="previewStudy.PatientName != ''">
+                  <strong>Patient Name</strong></br>
+                  {{previewStudy.PatientName}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="previewStudy.PatientID != ''">
+                  <strong>Patient ID</strong></br>
+                  {{previewStudy.PatientID}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="previewStudy.PatientBirthDay != ''">
+                  <strong>Patient BirthDay</strong></br>
+                  {{previewStudy.PatientBirthDay | date : 'dd/MM/yyyy'}}
+                  <md-divider></md-divider>
+                </div>
+              </md-list>
+            </md-content>
+          </md-tab>
+          <md-tab label="Study" class="text-red">
+            <md-content class="md-padding">
+              <md-list>
+                <div ng-if="previewStudy.StudyDescription != ''">
+                  <strong>Study Description</strong></br>
+                  {{previewStudy.StudyDescription}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="previewStudy.StudyDate != ''">
+                  <strong>Study Date</strong></br>
+                  {{previewStudy.StudyDate | date : 'dd/MM/yyyy'}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="previewStudy.StudyID != ''">
+                  <strong>Study ID</strong></br>
+                  {{previewStudy.StudyID}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="previewStudy.StudyDescription != ''">
+                  <strong>Study Description</strong></br>
+                  {{previewStudy.StudyDescription}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="previewStudy.InstitutionName != ''">
+                  <strong>Institution Name</strong></br>
+                  {{previewStudy.InstitutionName}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="previewStudy.AccessionNumber != ''">
+                  <strong>Accession Number</strong></br>
+                  {{previewStudy.AccessionNumber}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="previewStudy.ReferringPhysicianName != ''">
+                  <strong>Referring Physician Name</strong></br>
+                  {{previewStudy.ReferringPhysicianName}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="previewStudy.RequestedProcedureDescription != ''">
+                  <strong>Requested Procedure Description</strong></br>
+                  {{previewStudy.RequestedProcedureDescription}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="previewStudy.RequestingPhysician != ''">
+                  <strong>Requesting Physician</strong></br>
+                  {{previewStudy.RequestingPhysician}}
+                  <md-divider></md-divider>
+                </div>
+              </md-list>
+            </md-content>
+          </md-tab>
+          <md-tab label="Series" ng-repeat="(key, preview) in previewSeries" ng-if="key == previewIndex">
+            <md-content class="md-padding">
+              <md-list>
+                <div ng-if="preview.series.SeriesDescription != ''">
+                  <strong>Series Description</strong></br>
+                  {{preview.series.SeriesDescription}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="preview.series.SeriesNumber != ''">
+                  <strong>Series Number</strong></br>
+                  {{preview.series.SeriesNumber}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="preview.series.Modality != ''">
+                  <strong>Modality</strong></br>
+                  {{preview.series.Modality}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="preview.series.ContrastBolusAgent != ''">
+                  <strong>Contrast Bolus Agent</strong></br>
+                  {{preview.series.ContrastBolusAgent}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="preview.series.OperatorsName != ''">
+                  <strong>Operators Name</strong></br>
+                  {{preview.series.OperatorsName}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="preview.series.PerformedProcedureStepDescription != ''">
+                  <strong>Performed Procedure Step Description</strong></br>
+                  {{preview.series.PerformedProcedureStepDescription}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="preview.series.ProtocolName != ''">
+                  <strong>Protocol Name</strong></br>
+                  {{preview.series.ProtocolName}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="preview.series.SequenceName != ''">
+                  <strong>Sequence Name</strong></br>
+                  {{preview.series.SequenceName}}
+                  <md-divider></md-divider>
+                </div>
+                <div ng-if="preview.series.StationName != ''">
+                  <strong>Station Name</strong></br>
+                  {{preview.series.StationName}}
+                  <md-divider></md-divider>
+                </div>
+              </md-list>
+            </md-content>
+          </md-tab>
+        </md-tabs>
+        <md-button ng-click="close()" class="md-primary">
+          Close Preview
+        </md-button>
+      </md-content>
+    </md-sidenav>
+  </md-content>
+  </div>
+  <!-- /page content -->
+</div>
